@@ -3,8 +3,10 @@ const app = express();
 const port = 3000;
 const cors = require("cors");
 app.use(express.json());
-
 app.use(cors());
+var user = [];
+var seller = [];
+let product = [];
 
 // app.get("/", (req, res) => {
 //   var name = req.query.name;
@@ -14,7 +16,7 @@ app.use(cors());
 //   }
 //   res.send(`<h1>hello  ${final}world</h1>`);
 // });
-var user = [];
+
 // ================= user sign up ===========================//
 app.post("/signup", (req, res) => {
   var id = req.body.id;
@@ -35,14 +37,7 @@ app.post("/signup", (req, res) => {
   };
   user.push(users);
   console.log("user : ", user);
-  res.json({
-    ID: id,
-    Password: pass,
-    Address: Address,
-    mail: mail,
-    contact: contact,
-    pin: pin,
-  });
+  res.json(user);
 });
 app.post("/login", (req, res) => {
   var id = req.body.id;
@@ -82,7 +77,6 @@ app.post("/forget", (req, res) => {
   res.json("user not found");
 });
 // ================= seller sign up ===========================//
-var seller = [];
 app.post("/sellersignup", (req, res) => {
   var id = req.body.id;
   var pass = req.body.pass;
@@ -122,6 +116,7 @@ app.post("/sellerlogin", (req, res) => {
           contact: seller[i].contact,
           pin: seller[i].pin,
         });
+        return;
       } else {
         res.json("faild");
       }
@@ -129,7 +124,7 @@ app.post("/sellerlogin", (req, res) => {
   }
   res.json("user not found");
 });
-var product = [];
+// ================= add product ==========================//
 app.post("/add-product", (req, res) => {
   var id = req.body.id;
   var image = req.body.image;
@@ -155,20 +150,19 @@ app.post("/add-product", (req, res) => {
 app.get("/get-product", (req, res) => {
   res.json(product);
 });
+// =================== purchased product ========================//
 app.post("/purchased", (req, res) => {
-  var id = req.body.id;
-  var pass = req.body.pass;
-  var item = req.body.item;
+  const { id, pass, item } = req.body;
   console.log({ id, pass, item });
   for (let i = 0; i < user.length; i++) {
-    if (user[i].id === id) {
-      if (user[i].pass === pass) {
-        console.log("user found carry on");
-        for (let k = 0; k < product.length; k++) {
-          if (product[k].id === item) {
-            user[i].purchased.push(product[k]);
-             res.json(user[i]);
-          }
+    if (user[i].id === id && user[i].pass === pass) {
+      console.log("user found carry on");
+      for (let k = 0; k < product.length; k++) {
+        console.log(product[k]);
+        if (product[k].id === item) {
+          user[i].purchased.push(product[k]);
+          res.json(user[i]);
+          return;
         }
       }
     }

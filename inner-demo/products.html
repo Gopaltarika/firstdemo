@@ -41,7 +41,9 @@
         margin-bottom: 20px;
         text-align: center;
       }
-
+      #product-id {
+        max-width: 50px;
+      }
       .product-card .product-image img {
         width: 100%;
         height: 300px;
@@ -108,7 +110,9 @@
         font-size: 18px;
         transition: background-color 0.3s ease;
       }
-
+#product-price{
+  width: 130px !important;
+}
       .product-card button:hover {
         background-color: #0056b3;
       }
@@ -145,13 +149,20 @@
             required
           />
           <br />
-          <label for="product-price">Price</label>
-          <div class="price-container" style="width: 100%; max-width: 330px">
+          <div class="price-container" style="width: 100%; margin-top: 20px; max-width: 330px">
+            <input
+              type="text"
+              id="product-id"
+              name="product-price"
+              placeholder="Enter Id"
+              required
+            />
             <input
               type="number"
               id="product-price"
               name="product-price"
               placeholder="Enter price"
+              style="margin-left: 10px;"
               required
             />
             <select id="currency" name="currency">
@@ -178,7 +189,7 @@
       </form>
     </div>
     <script>
-      let productIdCounter = 1; // Initialize the counter
+      // let productIdCounter = "1"; // Initialize the counter
       function previewImage(event) {
         const reader = new FileReader();
         reader.onload = function () {
@@ -188,31 +199,35 @@
         reader.readAsDataURL(event.target.files[0]);
       }
 
-      document.getElementById("product-form").addEventListener("submit", function (e) {
-        e.preventDefault();
-        const id = productIdCounter++; 
-        const image = document.getElementById("preview-image").src;
-        const title = document.getElementById("product-title").value;
-        const price = document.getElementById("product-price").value;
-        const currency = document.getElementById("currency").value;
-        const description = document.getElementById("product-description").value;
-        const priceWithCurrency = `${price} ${currency}`;
-        fetch("http://localhost:3000/add-product", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: id,
-            image: image,
-            title: title,
-            price: priceWithCurrency,
-            description: description,
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => console.log(data));
-      });
+      document
+        .getElementById("product-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const id = document.getElementById("product-id").value;
+          const image = document.getElementById("preview-image").src;
+          const title = document.getElementById("product-title").value;
+          const price = document.getElementById("product-price").value;
+          const currency = document.getElementById("currency").value;
+          const description = document.getElementById(
+            "product-description"
+          ).value;
+          const priceWithCurrency = `${price} ${currency}`;
+          fetch("http://localhost:3000/add-product", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: id,
+              image: image,
+              title: title,
+              price: priceWithCurrency,
+              description: description,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => console.log(data));
+        });
     </script>
   </body>
 </html>
